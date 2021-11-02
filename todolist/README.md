@@ -4,6 +4,35 @@
 ### (3) cd project-이름
 ### (4) npm start
 
+----------------------------
+
 # <2> 추가한 Module
 ### (1) Nodemon 설치 :  npm install nodemon --save-dev
 ### (2) Router 설치  :  npm install react-router-dom --save
+
+
+<README.md 파일 작성 방법>
+# 가장큰 크기의 text로 변환
+## 그다음 작은 크기위 text로 변환
+### 그다음 작은 크기의 text로 변환
+#### 그다음 작은 크기의 text로 변환
+##### 그다음 작은 크기의 text로 변환
+###### 그다음 작은 크기의 text로 변환
+
+(들여쓰기는 tab 사용하기)
++ 안녕
+  + Hello
+    + hi
+
+
+* 안녕
+  * Hello
+    * hi
+
+- 안녕
+  - Hello
+    - hi
+
+( 구분선 수평선 만들기 )
+------------
+
