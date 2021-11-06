@@ -8,7 +8,7 @@ class BookList extends Component {
         // const books = this.props.books;
         // BookList  key 값을 추가하여야 스타일이 먹힘 
         const { books } = this.props; // 구조분해 할당
-        const bookItems = books.map(book => {
+        const bookItems = books.map(book=> {
             return (
                 <ListItem key={ book.ISBN } >
                     <BookListItem 
