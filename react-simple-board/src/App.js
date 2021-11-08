@@ -1,23 +1,24 @@
-import logo from './logo.svg';
+import React from 'react'
+import { useSelector , useDispatch} from 'react-redux';
 import './App.css';
+import LandingPage from './components/LandingPage';
+import TodoList  from './components/TodoList';
 
 function App() {
+
+  // state 가져오기 (state 그냥 꺼내오면 됨)
+  // state 상태관리도 용이 
+  const getWeight = useSelector( (state) => state );
+  const dispatch = useDispatch();
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+        { getWeight }
+        <button onClick={() => {dispatch({type:'증가'}) }}> 더하기 </button>
+        <button onClick={() => {dispatch({type:'감소'}) }}> 빼기 </button>
+        
+        <LandingPage />
+        <TodoList />
     </div>
   );
 }
