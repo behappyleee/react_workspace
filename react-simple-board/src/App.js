@@ -3,6 +3,11 @@ import { useSelector , useDispatch} from 'react-redux';
 import './App.css';
 import LandingPage from './components/LandingPage';
 import TodoList  from './components/TodoList';
+import AddRoot from './components/AddRoot';
+import DisNumRoot from './components/DisNumRoot';
+
+// state 를 도입하기 위하여서는 
+
 
 function App() {
 
@@ -11,12 +16,16 @@ function App() {
   const getWeight = useSelector( (state) => state );
   const dispatch = useDispatch();
 
+  const state = {number : 0 };
+
   return (
     <div className="App">
         { getWeight }
         <button onClick={() => {dispatch({type:'증가'}) }}> 더하기 </button>
         <button onClick={() => {dispatch({type:'감소'}) }}> 빼기 </button>
-        
+        <h1> Root </h1>
+        <AddRoot></AddRoot>
+        <DisNumRoot number={state.number}></DisNumRoot>
         <LandingPage />
         <TodoList />
     </div>
