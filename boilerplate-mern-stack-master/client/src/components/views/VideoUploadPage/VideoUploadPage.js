@@ -20,7 +20,11 @@ function VideoUploadPage() {
     const [Description, setDescription] = useState('');
     const [Private, setPrivate] = useState(0);
     const [Category, setCategory] = useState('Film & Animation');
-    
+    const [FilePath, setFilePath] = useState('');
+    const [Duration, setDuration] = useState('');    
+    const [ThumbnailPath, setThumbnailPath] = useState('');
+
+
     const onTitleChange = (e) => {
         // e 는 키보르를 칠때마다 event 가 발생 함 
         setVideoTitle( e.currentTarget.value ); 
@@ -50,13 +54,32 @@ function VideoUploadPage() {
         // /api/video 부분은 router 에 /api/video 가 있으므로 굳이 안적어 주어도 됨
         // Axios.post('{/api/video/uploadfiles', formData, config)
         Axios.post('/api/video/uploadfiles', formData, config)
+        
             .then(response => {
                 // 응답이 성공으로 돌아 올 시
                 if(response.data.success) {
                     console.log( 'success Data ~ ! ', response.data );
+                    // 성공 후
+                    let variable = {
+                        url: response.data,
+                        fileName: response.data.fileName,
+                    }
+
+                    Axios.post('/api/video/thumbnail', variable)   
+                        .then(response => {
+                            if(response.data.success) {
+                                console.log(response.data);
+                                setDuration(response.data.fileDuration)
+                                setThumbnailPath(response.data.url)
+                            } else {
+                                alert('Thmbnail 생성에 실패하였 습니다.')
+                            }
+                        })
                 // success 가 아닐 시 
                 } else {
-                    console.log( response );
+                    console.log('formData : ', formData);
+                    console.log('config : ', config);
+                    console.log('실패 후 respose', response );
                     alert('비디오 업로드에 실패하였습니다.');
                 }
 
@@ -87,9 +110,11 @@ function VideoUploadPage() {
                             )}
                         </Dropzone>
                         {/* Thumb */}
+                        {ThumbnailPath &&  
                         <div>
-                            <img src alt />
+                            <img src={`http://localhost:5000/${ThumbnailPath}`} alt='thumnnail' />
                         </div>
+                        }
                      </div>   
                     <div>
                         <img src alt />

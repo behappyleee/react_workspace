@@ -3,6 +3,7 @@ const router = express.Router();
 // const { Video } = require("../model/Video");
 const { auth } = require("../middleware/auth");
 const multer = require('multer');
+const ffmpeg =require('fluent-ffmpeg');
 
 let storage = multer.diskStorage({
     destination: (req, files, cb) => {
@@ -42,11 +43,42 @@ router.post("/uploadfiles", (req, res) => {
         
     })
 
-
-
 });
 
+router.post('/thumbnail', (res, req) => {
 
+    ffmpeg.ffprobe(req.body.url, function(err, metadata) {
+        console.log(metadata);
+        console.log(metadata.format.duration)
+        fileDuration = metadata.format.duration;
+    })
+
+    // 썸네일 생성 하고 비디오 (런닝 같은 정보등 ... 가져오기)
+    ffmpeg(req.body.url)
+        .on('fileName', function(filenames) {
+            console.log('Will generate' + filenames.join(','))
+            console.log(filenames);
+
+            filePath = 'uploads/thumbnails/' + filenames[0];
+        })  
+        .on('end', function () {
+            console.log('Screenshots taken');
+            return res.json({success: 'true', url: filePath, filDuration: fileDuration })
+        })
+        .on('error', function(err) {
+            console.log(err);
+            return res.json({success: false, err});
+        })
+        .screenshot({
+            count: 3,
+            folder: '',
+            size: '320x240',
+            filename: 'thumbnail%b.png'
+        })
+       
+
+
+})
 
 
 
