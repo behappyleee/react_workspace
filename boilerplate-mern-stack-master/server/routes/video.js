@@ -6,8 +6,9 @@ const multer = require('multer');
 const ffmpeg =require('fluent-ffmpeg');
 
 let storage = multer.diskStorage({
+    
     destination: (req, files, cb) => {
-        cb(null, 'uploads/');
+        cb(null, '../uploads/');
         console.log('storage ~~~ 1');
     },
     filename: (req, file, cb) => {
@@ -32,17 +33,20 @@ const upload = multer({ storage: storage }).single('file');
 router.post("/uploadfiles", (req, res) => {
     console.log('/upload video page ~~', req);
     // Client 에서 받은 video 를 server에 저장하기
-    upload(req, res, err => {
+    upload(req, res, (err) => {
         if(err) {
+            console.log('upload files ', req);
             return res.json({ success: false, err })
         } else {
             // res 는 들어간 파일 경로를 client 에게 보내줌
             console.log('success ~N !!!'); 
-            return res.json({ success: true, url: res.req.file.path, fileName: req.req.file.fileName  })     
+            return res.json({ 
+                success: true, 
+                url: res.req.file.path, 
+                fileName: req.req.file.fileName 
+             })     
         }
-        
     })
-
 });
 
 router.post('/thumbnail', (res, req) => {

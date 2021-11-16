@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import Axios from 'axios';
 import { Typography, Button, Form, Message, Input, Icon } from 'antd';
 import Dropzone from 'react-dropzone';
+import { userSelector } from 'react-redux'; 
 
 const { TextArea } = Input;
 const { Title } = Typography;
@@ -16,6 +17,7 @@ const CategoryOptions = [
     { value:3, label: 'Pets & Animals' }
 ]
 function VideoUploadPage() {
+    const user = useRSelector(state => state.user);
     const [VideoTitle, setVideoTitle] = useState('');
     const [Description, setDescription] = useState('');
     const [Private, setPrivate] = useState(0);
@@ -23,7 +25,6 @@ function VideoUploadPage() {
     const [FilePath, setFilePath] = useState('');
     const [Duration, setDuration] = useState('');    
     const [ThumbnailPath, setThumbnailPath] = useState('');
-
 
     const onTitleChange = (e) => {
         // e 는 키보르를 칠때마다 event 가 발생 함 
@@ -54,19 +55,18 @@ function VideoUploadPage() {
         // /api/video 부분은 router 에 /api/video 가 있으므로 굳이 안적어 주어도 됨
         // Axios.post('{/api/video/uploadfiles', formData, config)
         Axios.post('/api/video/uploadfiles', formData, config)
-        
-            .then(response => {
+            .then((response) => {
                 // 응답이 성공으로 돌아 올 시
                 if(response.data.success) {
                     console.log( 'success Data ~ ! ', response.data );
                     // 성공 후
                     let variable = {
-                        url: response.data,
+                        url: response.data.url,
                         fileName: response.data.fileName,
                     }
 
                     Axios.post('/api/video/thumbnail', variable)   
-                        .then(response => {
+                        .then((response) => {
                             if(response.data.success) {
                                 console.log(response.data);
                                 setDuration(response.data.fileDuration)
@@ -87,12 +87,30 @@ function VideoUploadPage() {
 
     }
 
+    const onSubmit = (e) => {
+        // 원래 클릭하려했던것을 방지할 수 있음
+        e.preventDefault();
+        const variables = {
+            writer : ,
+            title :,
+            description : ,
+            privacy :,
+            filePath : ,
+            category : ,
+            duration,
+            thumbnail :
+        }
+        Axios.post('/api/video/upload/Video', variables)
+
+
+
+    }
     return (
         <div style={{ maxWidth: '700px', margin:'2rem auto'}} >
             <div style={{ textAlign: 'center', marginBottom:'2rem' }}>
                 <Title level={2}>Upload Video</Title>
             </div>
-            <Form onSubmit>
+            <Form onSubmit={onSubmit}>
                 <div style={{ display:'flex', justifyContent:'space-between' }}>
                     <div>
                         {/* Drop Zone */}
@@ -103,9 +121,10 @@ function VideoUploadPage() {
                         >
                             {({ getRootProps, getInputProps }) => (
                                   <div style={{ width: '300px', height: '240px', border:'1px solid lightgray',
-                                    alignItems:'center', justifyContent:'center'}} { ...getRootProps() }>
-                                            <input {...getInputProps() } />
-                                            <Icon type="plus" style={{ fontSize: '3rem' }} />
+                                    alignItems:'center', justifyContent:'center'}}
+                                     { ...getRootProps() }>
+                                    <input {...getInputProps() } />
+                                    <Icon type="plus" style={{ fontSize: '3rem' }} />
                                   </div> 
                             )}
                         </Dropzone>
@@ -116,9 +135,6 @@ function VideoUploadPage() {
                         </div>
                         }
                      </div>   
-                    <div>
-                        <img src alt />
-                    </div>
                 </div>
                 <br></br><br></br>
                 <label>Title</label>
@@ -146,7 +162,7 @@ function VideoUploadPage() {
                     ))}
                 </select>
                 <br></br><br></br>
-                <Button type="primary" size="large" onClick>
+                <Button type="primary" size="large" onClick={onSubmit}>
                   Submit
                 </Button>
             </Form>
