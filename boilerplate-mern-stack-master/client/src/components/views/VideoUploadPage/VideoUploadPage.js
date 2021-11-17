@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import Axios from 'axios';
-import { Typography, Button, Form, Message, Input, Icon } from 'antd';
+import { Typography, Button, Form, Message, Input, Icon, message } from 'antd';
 import Dropzone from 'react-dropzone';
 import { userSelector } from 'react-redux'; 
 
@@ -16,7 +16,7 @@ const CategoryOptions = [
     { value:2, label: 'Music' },
     { value:3, label: 'Pets & Animals' }
 ]
-function VideoUploadPage() {
+function VideoUploadPage(props) {
     const user = useRSelector(state => state.user);
     const [VideoTitle, setVideoTitle] = useState('');
     const [Description, setDescription] = useState('');
@@ -91,19 +91,31 @@ function VideoUploadPage() {
         // 원래 클릭하려했던것을 방지할 수 있음
         e.preventDefault();
         const variables = {
-            writer : ,
-            title :,
-            description : ,
-            privacy :,
-            filePath : ,
-            category : ,
-            duration,
-            thumbnail :
+            writer : user.userData._id,
+            title : VideoTitle,
+            description : Description,
+            privacy : Private,
+            filePath : FilePath,
+            category : Category,
+            duration: Duration,
+            thumbnail : ThumbnailPath,
         }
-        Axios.post('/api/video/upload/Video', variables)
 
-
-
+        Axios.post('/api/video/uploadVideo', variables)
+            .then( response => {
+                if(response.data.success) {
+                    console.log(response.data);
+                    message.success('성공적으로 업로드를 하였습니다.');
+                    
+                    setTimeout(() => {
+                        // 3 초정도 있다가 Landing 페이지로 이동 시켜줌 
+                        props.history.push('/');
+                    }, 3000)
+                    
+                } else {
+                    alert('비디오 업로드에 실패하였습니다.')
+                }
+            })
     }
     return (
         <div style={{ maxWidth: '700px', margin:'2rem auto'}} >

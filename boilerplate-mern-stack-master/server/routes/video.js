@@ -4,6 +4,7 @@ const router = express.Router();
 const { auth } = require("../middleware/auth");
 const multer = require('multer');
 const ffmpeg =require('fluent-ffmpeg');
+const { Video } = require('../models/Video');
 
 let storage = multer.diskStorage({
     
@@ -48,6 +49,31 @@ router.post("/uploadfiles", (req, res) => {
         }
     })
 });
+
+router.post("/uploadVideo", (req, res) => {
+    // 비디오 정보들을 저장
+    // req.body 는 Client 에서 보낸 Variables 들이 req.body 안에 담김
+    const video = new Video(req.body) 
+    
+    // MongoDB 메서드로 저장시켜 줌 
+    video.save((err, doc) => {
+        if(err) return res.json({success:false}, err);
+        res.status(200).json({success: true})
+    });
+});
+
+router.get("/getVideos", (req, res) => {
+    // 비디오를 가져와서 Landing 비디오에 띄워주기 위함 (Client 요청에 의하여)
+    // populate 는 모든 writer 정보를 가져옴 
+    Video.find()
+        .populate('writer')
+        .exec((err, videos) => {
+            if(err) return res.status(400).send(err);
+            res.status(200).json({ success:true, videos })
+        })
+});
+
+
 
 router.post('/thumbnail', (res, req) => {
 
